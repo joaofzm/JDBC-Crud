@@ -12,19 +12,19 @@ public class Player implements Serializable {
 	private Date birthDate;
 	private Double baseSalary;
 	
-	private Team department;
+	private Team team;
 	
 	public Player() {
 		
 	}
 
-	public Player(Integer id, String name, String position, Date birthDate, Double baseSalary, Team department) {
+	public Player(Integer id, String name, String position, Date birthDate, Double baseSalary, Team team) {
 		this.id = id;
 		this.name = name;
 		this.position = position;
 		this.birthDate = birthDate;
 		this.baseSalary = baseSalary;
-		this.department = department;
+		this.team = team;
 	}
 
 	public Integer getId() {
@@ -47,8 +47,8 @@ public class Player implements Serializable {
 		return position;
 	}
 
-	public void setEmail(String email) {
-		this.position = email;
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
 	public Date getBirthDate() {
@@ -67,12 +67,12 @@ public class Player implements Serializable {
 		this.baseSalary = baseSalary;
 	}
 
-	public Team getDepartment() {
-		return department;
+	public Team getTeam() {
+		return team;
 	}
 
-	public void setDepartment(Team department) {
-		this.department = department;
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class Player implements Serializable {
 	@Override
 	public String toString() {
 		return "Player [id=" + id + ", name=" + name + ", position=" + position + ", birthDate=" + birthDate + ", baseSalary="
-				+ baseSalary + ", department=" + department + "]";
+				+ baseSalary + ", team =" + team + "]";
 	}
 	
 	

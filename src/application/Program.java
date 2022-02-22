@@ -1,19 +1,18 @@
 package application;
 
 
-import java.util.Date;
-
+import model.dao.DaoFactory;
+import model.dao.PlayerDao;
 import model.entities.Player;
-import model.entities.Team;
 
 public class Program {
 
 	public static void main(String[] args) {
 		
-		Team obj = new Team(1, "Lakers");
+		PlayerDao playerDao = DaoFactory.createPlayerDaoJDBC();
 		
-		Player player = new Player(1, "Lebron", "PG", new Date(), 40000000.0, obj);
+		Player player = playerDao.findById(3);
+		
 		System.out.println(player);
-		System.out.println(obj);
 	}
 }
