@@ -1,9 +1,11 @@
 package model.dao.implementations;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,37 @@ public class PlayerDaoJDBC implements PlayerDao {
 
 	@Override
 	public void insert(Player obj) {
-
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(
+					"INSERT INTO player "
+					+ "(Name, Pos, BirthDate, BaseSalary, TeamId) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getPosition());
+			ps.setDate(3, new Date(obj.getBirthDate().getTime()));
+			ps.setDouble(4, obj.getBaseSalary());
+			ps.setInt(5, obj.getTeam().getId());
+			
+			int rowsAffected = ps.executeUpdate();
+			
+			if (rowsAffected > 0) {
+				ResultSet rs = ps.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs);
+			} else {
+				throw new DbException("Error! No Affected Line");
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override

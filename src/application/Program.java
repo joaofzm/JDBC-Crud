@@ -1,6 +1,7 @@
 package application;
 
 
+import java.util.Date;
 import java.util.List;
 
 import model.dao.DaoFactory;
@@ -31,5 +32,12 @@ public class Program {
 		for(Player obj : list) {
 			System.out.println(obj);
 		}
+		
+		System.out.println("\n===============Test 4: Player Insert===============");
+		Team test4Team = new Team (6,null);
+		Player newPlayer = new Player(null, "Demar Derozan", "SG", new Date(), 36000000.0, test4Team);
+		playerDao.insert(newPlayer);
+		System.out.println("Inserted sucessfully! New id = "+ newPlayer.getId());
+
 	}
 }
