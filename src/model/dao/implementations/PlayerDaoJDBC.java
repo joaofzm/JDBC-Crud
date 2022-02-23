@@ -72,7 +72,45 @@ public class PlayerDaoJDBC implements PlayerDao {
 
 	@Override
 	public List<Player> findAll() {
-		return null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					" SELECT player.*,team.Name as TeamName "
+					+ "FROM player INNER JOIN team "
+					+ "ON player.TeamId = team.Id "
+					+ "ORDER BY Name");
+			rs = ps.executeQuery();
+			
+			List <Player> listOfPlayers = new ArrayList<>();
+			Map <Integer, Team> map = new HashMap<>();
+			while (rs.next()) {
+				
+				Team checkIfTeamAlreadyOnMap = map.get(rs.getInt("TeamId"));
+				
+				Team tempTeam;
+				if (checkIfTeamAlreadyOnMap == null) {
+					tempTeam = new Team(rs.getInt("TeamId"),rs.getString("TeamName"));
+					map.put(rs.getInt("TeamId"), tempTeam);
+				} else {
+					tempTeam = map.get(rs.getInt("TeamId"));
+				}
+				Player p = new Player(
+						rs.getInt("Id"),
+						rs.getString("Name"),
+						rs.getString("Pos"),
+						rs.getDate("BirthDate"),
+						rs.getDouble("BaseSalary"),
+						tempTeam);
+				listOfPlayers.add(p);
+			}
+			return listOfPlayers;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	@Override

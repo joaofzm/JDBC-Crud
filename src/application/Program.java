@@ -14,14 +14,20 @@ public class Program {
 		
 		PlayerDao playerDao = DaoFactory.createPlayerDaoJDBC();
 		
-		System.out.println("===============Teste 1: Player Find by ID===============");
+		System.out.println("===============Test 1: Player Find by ID===============");
 		Player player = playerDao.findById(3);
 		System.out.println(player);
 		
 		
-		System.out.println("\n===============Teste 2: Player Find by ID===============");
+		System.out.println("\n===============Test 2: Player Find by Team===============");
 		Team team = new Team (2,null);
 		List<Player> list = playerDao.findByTeam(team);
+		for(Player obj : list) {
+			System.out.println(obj);
+		}
+		
+		System.out.println("\n===============Test 3: Player Find All===============");
+		list = playerDao.findAll();
 		for(Player obj : list) {
 			System.out.println(obj);
 		}
