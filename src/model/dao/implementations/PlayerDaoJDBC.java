@@ -86,7 +86,22 @@ public class PlayerDaoJDBC implements PlayerDao {
 
 	@Override
 	public void deleteById(Integer id) {
-
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM player WHERE Id = ?");
+			
+			ps.setInt(1, id);
+			
+			int rowsAffected = ps.executeUpdate();
+			
+			if (rowsAffected<1) {
+				throw new DbException("Delete operation failed: Id not found!");
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override

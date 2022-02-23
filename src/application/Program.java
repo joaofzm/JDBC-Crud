@@ -4,6 +4,7 @@ package application;
 import java.util.Date;
 import java.util.List;
 
+import db.DbException;
 import model.dao.DaoFactory;
 import model.dao.PlayerDao;
 import model.entities.Player;
@@ -35,7 +36,7 @@ public class Program {
 		
 		System.out.println("\n===============Test 4: Player Insert===============");
 		Team test4Team = new Team (6,null);
-		Player newPlayer = new Player(null, "Demar Derozan", "SG", new Date(), 36000000.0, test4Team);
+		Player newPlayer = new Player(null, "Kyler Korven", "SF", new Date(), 6000000.0, test4Team);
 		playerDao.insert(newPlayer);
 		System.out.println("Inserted sucessfully! New id = "+ newPlayer.getId());
 
@@ -43,7 +44,20 @@ public class Program {
 		Player test5Player = playerDao.findById(6);
 		test5Player.setName("Yusei Fudo");
 		playerDao.update(test5Player);
-		System.out.println("Update completed sucesfully!");
+		System.out.println("Update c ompleted sucesfully!");
+		
+		System.out.println("\n===============Test 6: Player Delet===============");
+		boolean deleted = false;
+		try {
+			playerDao.deleteById(18);
+			deleted = true;
+		} catch (DbException e) {
+			System.out.println(e.getMessage());
+		} 
+		if (deleted) {
+			System.out.println("Deleted sucesfully!");
+		}
+		
  
 	}
 }
