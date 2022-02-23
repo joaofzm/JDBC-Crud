@@ -16,21 +16,21 @@ public class Program {
 		PlayerDao playerDao = DaoFactory.createPlayerDaoJDBC();
 		
 		System.out.println("===============Test 1: Player Find by ID===============");
-		Player player = playerDao.findById(3);
-		System.out.println(player);
+		Player test1player = playerDao.findById(3);
+		System.out.println(test1player);
 		
 		
 		System.out.println("\n===============Test 2: Player Find by Team===============");
-		Team team = new Team (2,null);
-		List<Player> list = playerDao.findByTeam(team);
-		for(Player obj : list) {
+		Team test2Team = new Team (2,null);
+		List<Player> test2List = playerDao.findByTeam(test2Team);
+		for(Player obj : test2List) {
 			System.out.println(obj);
 		}
 		
 		System.out.println("\n===============Test 3: Player Find All===============");
-		list = playerDao.findAll();
-		for(Player obj : list) {
-			System.out.println(obj);
+		List<Player> test3List = playerDao.findAll();
+		for(Player player : test3List) {
+			System.out.println(player);
 		}
 		
 		System.out.println("\n===============Test 4: Player Insert===============");
@@ -39,5 +39,11 @@ public class Program {
 		playerDao.insert(newPlayer);
 		System.out.println("Inserted sucessfully! New id = "+ newPlayer.getId());
 
+		System.out.println("\n===============Test 5: Player Update===============");
+		Player test5Player = playerDao.findById(6);
+		test5Player.setName("Yusei Fudo");
+		playerDao.update(test5Player);
+		System.out.println("Update completed sucesfully!");
+ 
 	}
 }

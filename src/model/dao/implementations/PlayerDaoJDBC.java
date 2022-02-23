@@ -62,7 +62,26 @@ public class PlayerDaoJDBC implements PlayerDao {
 
 	@Override
 	public void update(Player obj) {
-
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(
+					"UPDATE player "
+					+ "SET Name = ?, Pos = ?, BirthDate = ?, BaseSalary = ?, TeamId = ? "
+					+ "WHERE Id = ?");
+			ps.setString(1, obj.getName());
+			ps.setString(2, obj.getPosition());
+			ps.setDate(3, new Date(obj.getBirthDate().getTime()));
+			ps.setDouble(4, obj.getBaseSalary());
+			ps.setInt(5, obj.getTeam().getId());
+			ps.setInt(6, obj.getId());
+			
+			ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override
