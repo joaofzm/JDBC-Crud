@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -41,21 +44,21 @@ public class PlayerDaoJDBC implements PlayerDao {
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(
-					"SELECT seller.*,department.Name as DepName "
-					+ "FROM seller INNER JOIN department "
-					+ "ON seller.DepartmentId = department.Id "
-					+ "WHERE seller.Id = ?");
+					"SELECT player.*,team.Name as TeamName "
+					+ "FROM player INNER JOIN team "
+					+ "ON player.TeamId = team.Id "
+					+ "WHERE player.Id = ?");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				Team team = new Team(rs.getInt("TeamId"),rs.getString("TeamName"));
-				Player p = new Player();
-				p.setId(rs.getInt("Id"));
-				p.setName(rs.getString("Name"));
-				p.setPosition(rs.getString("Pos"));
-				p.setBaseSalary(rs.getDouble("BaseSalary"));
-				p.setBirthDate(rs.getDate("BirthDate"));
-				p.setTeam(team);
+				Player p = new Player(
+						rs.getInt("Id"),
+						rs.getString("Name"),
+						rs.getString("Pos"),
+						rs.getDate("BirthDate"),
+						rs.getDouble("BaseSalary"),
+						team);
 				return p;
 			}
 			return null;
@@ -70,6 +73,51 @@ public class PlayerDaoJDBC implements PlayerDao {
 	@Override
 	public List<Player> findAll() {
 		return null;
+	}
+
+	@Override
+	public List<Player> findByTeam(Team team) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					" SELECT player.*,team.Name as TeamName "
+					+ "FROM player INNER JOIN team "
+					+ "ON player.TeamId = team.Id "
+					+ "WHERE TeamId = ? "
+					+ "ORDER BY Name");
+			ps.setInt(1, team.getId());
+			rs = ps.executeQuery();
+			
+			List <Player> listOfPlayers = new ArrayList<>();
+			Map <Integer, Team> map = new HashMap<>();
+			while (rs.next()) {
+				
+				Team checkIfTeamAlreadyOnMap = map.get(rs.getInt("TeamId"));
+				
+				Team tempTeam;
+				if (checkIfTeamAlreadyOnMap == null) {
+					tempTeam = new Team(rs.getInt("TeamId"),rs.getString("TeamName"));
+					map.put(rs.getInt("TeamId"), tempTeam);
+				} else {
+					tempTeam = map.get(rs.getInt("TeamId"));
+				}
+				Player p = new Player(
+						rs.getInt("Id"),
+						rs.getString("Name"),
+						rs.getString("Pos"),
+						rs.getDate("BirthDate"),
+						rs.getDouble("BaseSalary"),
+						tempTeam);
+				listOfPlayers.add(p);
+			}
+			return listOfPlayers;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(ps);
+			DB.closeResultSet(rs);
+		}
 	}
 
 }
